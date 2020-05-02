@@ -61,6 +61,7 @@ class Mle(Gan):
         self.add_metric(docsim)
 
     def train_discriminator(self):
+        print("start discriminator training")
         generate_samples(self.sess, self.generator, self.batch_size, self.generate_num, self.generator_file)
         self.dis_data_loader.load_train_data(self.oracle_file, self.generator_file)
         for _ in range(3):
@@ -132,6 +133,8 @@ class Mle(Gan):
         tokens = get_tokenlized(data_loc)
         word_set = get_word_list(tokens)
         [word_index_dict, index_word_dict] = get_dict(word_set)
+        self.index_word_dict = index_word_dict
+        print("vocab size: ", len(index_word_dict))
         with open(self.oracle_file, 'w') as outfile:
             outfile.write(text_to_code(tokens, word_index_dict, self.sequence_length))
         return word_index_dict, index_word_dict
@@ -166,7 +169,15 @@ class Mle(Gan):
                 generate_samples(self.sess, self.generator, self.batch_size, self.generate_num, self.generator_file)
                 get_real_test_file()
                 self.evaluate()
-        generate_samples(self.sess, self.generator, self.batch_size, self.generate_num, self.generator_file)
-
-
-
+        with open("mle_generated.txt", 'w', encoding='utf-8') as wf:
+            for _idx, seq in enumerate(generate_samples(self.sess, self.generator, self.batch_size, self.generate_num, self.generator_file)):
+                real_seq = []
+                for word in seq:
+                    real_seq.append(self.index_word_dict.get(str(word), "<UNK>"))
+                idx = 0
+                for idx, word in enumerate(reversed(real_seq)):
+                    if word == "<UNK>":
+                        pass
+                    else:
+                        break
+                wf.write(' '.join(real_seq[:-idx]) + "\n")
