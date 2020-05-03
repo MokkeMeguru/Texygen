@@ -1,0 +1,6 @@
+defaults:
+  - models: leakgan
+  - datasets: oracle
+
+vocab_size: 5000
+generate_num: 10000
