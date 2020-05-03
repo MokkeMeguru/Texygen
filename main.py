@@ -32,7 +32,6 @@ def set_gan(gan_name):
         sys.exit(-2)
 
 
-
 def set_training(gan, training_method):
     try:
         if training_method == 'oracle':
@@ -42,10 +41,12 @@ def set_training(gan, training_method):
         elif training_method == 'real':
             gan_func = gan.train_real
         else:
-            print(Fore.RED + 'Unsupported training setting: ' + training_method + Fore.RESET)
+            print(Fore.RED + 'Unsupported training setting: ' +
+                  training_method + Fore.RESET)
             sys.exit(-3)
     except AttributeError:
-        print(Fore.RED + 'Unsupported training setting: ' + training_method + Fore.RESET)
+        print(Fore.RED + 'Unsupported training setting: ' +
+              training_method + Fore.RESET)
         sys.exit(-3)
     return gan_func
 
@@ -58,14 +59,15 @@ def parse_cmd(argv):
         if '-h' in opt_arg.keys():
             print('usage: python main.py -g <gan_type>')
             print('       python main.py -g <gan_type> -t <train_type>')
-            print('       python main.py -g <gan_type> -t realdata -d <your_data_location>')
+            print(
+                '       python main.py -g <gan_type> -t realdata -d <your_data_location>')
             sys.exit(0)
-        if not '-g' in opt_arg.keys():
+        if '-g' not in opt_arg.keys():
             print('unspecified GAN type, use MLE training only...')
             gan = set_gan('mle')
         else:
             gan = set_gan(opt_arg['-g'])
-        if not '-t' in opt_arg.keys():
+        if '-t' not in opt_arg.keys():
             gan.train_oracle()
         else:
             gan_func = set_training(gan, opt_arg['-t'])

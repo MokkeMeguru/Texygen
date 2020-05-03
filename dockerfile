@@ -1,4 +1,6 @@
-FROM tensorflow/tensorflow:2.1.0-gpu-py3
+FROM tensorflow/tensorflow:1.15.2-gpu-py3
+RUN apt update
+RUN apt install -y tmux wget git
 RUN mkdir workspace
 ADD requirements.txt .
 RUN pip install -U pip
